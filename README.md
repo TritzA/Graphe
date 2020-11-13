@@ -1,6 +1,6 @@
 # Graphe
 
-Utilisation d'un graphe pour résoudre trois problèmes.
+Résoudre trois problèmes grâce à la théorie des graphes.
 
 Laboratoire : 5/5
 
