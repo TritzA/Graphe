@@ -20,6 +20,7 @@ public class DetailMyWorld {
         return null;
     }
 
+
     public static void printWorld(ArrayList<ArrayList<Integer>> world) {
         for (ArrayList<Integer> row : world) {
             System.out.println(row.stream().map(String::valueOf).collect(Collectors.joining(" ")));
