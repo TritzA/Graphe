@@ -11,6 +11,7 @@ public class Maze {
      * @return Distance of the shortest path within the maze, null if not solvable
      */
     private static void setVoisins(int x, int y, ArrayList<ArrayList<Tile>> maze) {
+
         Tile l, r, u, d;
         Tile th = maze.get(x).get(y);
 
