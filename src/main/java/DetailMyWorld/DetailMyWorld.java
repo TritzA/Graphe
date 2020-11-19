@@ -4,6 +4,7 @@ import Maze.Tile;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.lang.IndexOutOfBoundsException;
 
 public class DetailMyWorld {
     /**
@@ -25,7 +26,7 @@ public class DetailMyWorld {
     public static List<Set<Integer>> findContinents(ArrayList<ArrayList<Integer>> world, boolean isBreadthFirstSearch) {
 
         List<Set<Integer>> listOfAllContinents = new ArrayList<>();
-        if (isBreadthFirstSearch) {
+        if(isBreadthFirstSearch){
             for (int i = 0; i < world.size(); i++) {
                 for (int j = 0; j < world.get(i).size(); j++) {
                     if (world.get(i).get(j) != 0) {
@@ -33,28 +34,30 @@ public class DetailMyWorld {
                     }
                 }
             }
-        }
+            }
         return listOfAllContinents;
     }
 
     public static Set<Integer> dfs(ArrayList<ArrayList<Integer>> world, int i, int j) {
         Set<Integer> S = new HashSet<>();
-        S.add(world.get(i).get(j));
         while (!S.isEmpty()) {
             if (i < 0 || i > world.size() || j < 0 || j > world.get(i).size() || world.get(i).get(j) == 0) {
                 return null;
-            }
-            else{
+            } else {
                 S.add(world.get(i).get(j));
                 world.get(i).set(j, 0);
-                dfs(world, i-1, j); //up
-                dfs(world, i+1, j); //down
-                dfs(world, i, j+1); // right
-                dfs(world, i, j-1); //left
+                try {
+
+                    dfs(world, i - 1, j); //up
+                    dfs(world, i + 1, j); //down
+                    dfs(world, i, j + 1); // right
+                    dfs(world, i, j - 1); //left
+                } catch (IndexOutOfBoundsException ignored) {
+                }
             }
         }
         return S;
-    }
+        }
 
     public static void printWorld(ArrayList<ArrayList<Integer>> world) {
         for (ArrayList<Integer> row : world) {
