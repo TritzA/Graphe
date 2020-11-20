@@ -49,13 +49,14 @@ public class Maze {
         Boolean canContinue = false;
         ArrayList<ArrayList<Vertex>> mazeV = new ArrayList<ArrayList<Vertex>>();
         int rowNumber = 0;
-        for (ArrayList<Tile> row: maze) {
+        for (ArrayList<Tile> row : maze) {
             ArrayList<Vertex> mazeVRow = new ArrayList<Vertex>();
             mazeV.add(rowNumber, mazeVRow);
             rowNumber++;
-            for (Tile t: row) {
+            for (Tile t : row) {
                 Vertex v = new Vertex(t);
                 mazeVRow.add(v);
+                // set ici wall floor entrance?
             }
         }
 
@@ -67,17 +68,17 @@ public class Maze {
                 Vertex v = mazeV.get(row).get(col);
 
                 if (v.getTile().toString().equals("_"))
-                    v.setDist(-1);
+                    v.setDist(-1);// floor
                 else if (v.getTile().toString().equals("*")) {
                     if (stack.empty()) {
-                        v.setDist(0);
+                        v.setDist(0);// entrance
                         stack.push(v);
                     } else {
                         canContinue = true;
-                        v.setDist(-3);
+                        v.setDist(-3);// exit
                     }
                 } else {
-                    v.setDist(-2);
+                    v.setDist(-2);// wall
                 }
             }
         }
@@ -90,16 +91,15 @@ public class Maze {
             Vertex vertex = stack.pop();
             for (Vertex v : vertex.getList()) {
 
-                if (v.getDist() == -1 || v.getDist() == -3 ){
+                if (v.getDist() == -1 || v.getDist() == -3) {
                     v.setDist(vertex.getDist() + 1);
                     stack.push(v);
-                    if (v.getTile().toString().equals("*") ) {
+                    if (v.getTile().toString().equals("*")) {
                         return v.getDist();
                     }
                 }
             }
         }
-
         return null;
     }
 
