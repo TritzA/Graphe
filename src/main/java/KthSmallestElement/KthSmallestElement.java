@@ -23,6 +23,10 @@ public class KthSmallestElement {
      * @return `K`th smallest element in `matrix`, null if non-existent
      */
     static public <T extends Comparable<T>> T findKthSmallestElement(final T[][] matrix, final int k) {
+        PriorityQueue<T> pq = new PriorityQueue<T>();
+        for (int col = 0; col < matrix.length; col++){
+
+        }
         return null;
     }
 }
