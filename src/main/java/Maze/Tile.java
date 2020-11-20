@@ -8,7 +8,7 @@ public enum Tile {
     Exit;
 
     private int dist;
-    LinkedList<Tile> list = new LinkedList<>();
+    private LinkedList<Tile> list = new LinkedList<>();
     @Override
     public String toString() {
         return switch (this) {
@@ -34,3 +34,4 @@ public enum Tile {
     }
 
 }
+

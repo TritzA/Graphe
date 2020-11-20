@@ -5,79 +5,96 @@ import java.util.stream.Collectors;
 
 public class Maze {
 
-    /** TODO
+    private static void setNeighboor(int x, int y, ArrayList<ArrayList<Vertex>> mazeV) {
+        Vertex left, right, up, down;
+        Vertex v = mazeV.get(x).get(y);
+
+        try {
+            left = getValue(x, y - 1, mazeV);
+            v.addList(left);
+        } catch (IndexOutOfBoundsException e) {
+        }
+
+        try {
+            right = getValue(x, y + 1, mazeV);
+            v.addList(right);
+        } catch (IndexOutOfBoundsException e) {
+        }
+
+        try {
+            up = getValue(x - 1, y, mazeV);
+            v.addList(up);
+        } catch (IndexOutOfBoundsException e) {
+        }
+
+        try {
+            down = getValue(x + 1, y, mazeV);
+            v.addList(down);
+        } catch (IndexOutOfBoundsException e) {
+        }
+    }
+
+    private static Vertex getValue(int x, int y, ArrayList<ArrayList<Vertex>> mazeV) {
+        return mazeV.get(x).get(y);
+    }
+
+    /**
+     * TODO
      * Returns the distance of the shortest path within the maze
+     *
      * @param maze 2D table representing the maze
      * @return Distance of the shortest path within the maze, null if not solvable
      */
-    private static void setVoisins(int x, int y, ArrayList<ArrayList<Tile>> maze) {
-        Tile l, r, u, d;
-        Tile th = maze.get(x).get(y);
-
-        try {
-            l = getValue(x, y - 1, maze);
-            th.addList(l);
-        } catch (IndexOutOfBoundsException e) {
-        }
-
-        try {
-            r = getValue(x, y + 1, maze);
-            th.addList(r);
-        } catch (IndexOutOfBoundsException e) {
-        }
-
-        try {
-            u = getValue(x - 1, y, maze);
-            th.addList(u);
-        } catch (IndexOutOfBoundsException e) {
-        }
-
-        try {
-            d = getValue(x - 1, y, maze);
-            th.addList(d);
-        } catch (IndexOutOfBoundsException e) {
-        }
-    }
-
-    private static Tile getValue(int x, int y, ArrayList<ArrayList<Tile>> maze){
-        return maze.get(x).get(y);
-    }
-
     public static Integer findShortestPath(ArrayList<ArrayList<Tile>> maze) {
-        Boolean con = false;
-        Stack<Tile> q = new Stack<Tile>();
-        for (int j = 0; j < maze.size(); j++) {
-           for(int i = 0; i < maze.get(j).size(); i++){
-               setVoisins(j, i, maze);
-               Tile th = maze.get(j).get(i);
+        Boolean canContinue = false;
+        ArrayList<ArrayList<Vertex>> mazeV = new ArrayList<ArrayList<Vertex>>();
+        int rowNumber = 0;
+        for (ArrayList<Tile> row: maze) {
+            ArrayList<Vertex> mazeVRow = new ArrayList<Vertex>();
+            mazeV.add(rowNumber, mazeVRow);
+            rowNumber++;
+            for (Tile t: row) {
+                Vertex v = new Vertex(t);
+                mazeVRow.add(v);
+            }
+        }
 
-                if(th.toString().equals("*")){
-                    if(q.empty()) {
-                        th.setDist(0);
-                        q.push(th);
-                    }else
-                        con = true;
-                }else{
-                    th.setDist(-1);
+        Stack<Vertex> stack = new Stack<Vertex>();
+
+        for (int row = 0; row < mazeV.size(); row++) {
+            for (int col = 0; col < mazeV.get(row).size(); col++) {
+                setNeighboor(col, row, mazeV);
+                Vertex v = mazeV.get(row).get(col);
+
+                if (v.getTile().toString().equals("_"))
+                    v.setDist(-1);
+                else if (v.getTile().toString().equals("*")) {
+                    if (stack.empty()) {
+                        v.setDist(0);
+                        stack.push(v);
+                    } else {
+                        canContinue = true;
+                        v.setDist(-3);
+                    }
+                } else {
+                    v.setDist(-2);
                 }
             }
         }
 
-        if(!con){
+        if (!canContinue) {
             return null;
         }
 
-        while(!q.empty()){
-            System.out.println("AAAAAAAAAAAAAAAAAAAAA");
-            Tile t = q.pop();
-            System.out.println(t.getDist());
-            for(Tile p: t.getList()){
-                if(p.getDist() == -1) {
-                    System.out.println("BBBBBBBBBBB");
-                    p.setDist(t.getDist() + 1);
-                    q.push(p);
-                    if(p.toString().equals("*")){
-                        return p.getDist();
+        while (!stack.empty()) {
+            Vertex vertex = stack.pop();
+            for (Vertex v : vertex.getList()) {
+
+                if (v.getDist() == -1 || v.getDist() == -3 ){
+                    v.setDist(vertex.getDist() + 1);
+                    stack.push(v);
+                    if (v.getTile().toString().equals("*") ) {
+                        return v.getDist();
                     }
                 }
             }
