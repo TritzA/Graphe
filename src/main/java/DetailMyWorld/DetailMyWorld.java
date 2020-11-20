@@ -25,38 +25,35 @@ public class DetailMyWorld {
 
     public static List<Set<Integer>> findContinents(ArrayList<ArrayList<Integer>> world, boolean isBreadthFirstSearch) {
 
-        List<Set<Integer>> listOfAllContinents = new ArrayList<>();
-        if(isBreadthFirstSearch){
-            for (int i = 0; i < world.size(); i++) {
+        List<Set<Integer>> listOfAllContinents = new ArrayList<>(); //La liste des continents à retourner
+        if(isBreadthFirstSearch){ // méthode avec breadthfirstsearch
+            for (int i = 0; i < world.size(); i++) {    // On parcours toute la matrice
                 for (int j = 0; j < world.get(i).size(); j++) {
-                    if (world.get(i).get(j) != 0) {
-                        listOfAllContinents.add(dfs(world, i, j));
-                    }
-                }
+                    if (world.get(i).get(j) != 0) {  // On garde seulement les elements qui sont # 0
+                        listOfAllContinents.add(dfs(world, i, j)); // on fait un dfs en les mettant dans
+                    }                                              // dans la liste des continents
+                }                                               // le set elimine les doublons, d'ou son utilité
             }
             }
         return listOfAllContinents;
     }
+// Voila le dfs, qui cherche tous les elements adjacents a un elements non nul,
+// ensuite l'adjacent de chaque element adjcent, ainside suite, on utilisé une méthode recursive ici
 
     public static Set<Integer> dfs(ArrayList<ArrayList<Integer>> world, int i, int j) {
-        Set<Integer> S = new HashSet<>();
-        while (!S.isEmpty()) {
-            if (i < 0 || i > world.size() || j < 0 || j > world.get(i).size() || world.get(i).get(j) == 0) {
-                return null;
-            } else {
-                S.add(world.get(i).get(j));
-                world.get(i).set(j, 0);
+        Set<Integer> S = new HashSet<>(); // on utilise ici un set, car on retourne une liste de set
+        while (!S.isEmpty()) {            // qui est listeOfAllContinents
                 try {
-
+                    S.add(world.get(i).get(j)); // On met l'élément dans le set
+                    world.get(i).set(j, 0);     // et on le change à zéro pour éviter de le reprendre
                     dfs(world, i - 1, j); //up
                     dfs(world, i + 1, j); //down
                     dfs(world, i, j + 1); // right
                     dfs(world, i, j - 1); //left
                 } catch (IndexOutOfBoundsException ignored) {
-                }
             }
         }
-        return S;
+        return S;    // on retourne un continent, qui est un set
         }
 
     public static void printWorld(ArrayList<ArrayList<Integer>> world) {
