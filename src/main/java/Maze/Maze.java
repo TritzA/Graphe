@@ -49,27 +49,36 @@ public class Maze {
         Boolean canContinue = false;
         ArrayList<ArrayList<Vertex>> mazeV = new ArrayList<ArrayList<Vertex>>();
         int rowNumber = 0;
+
+        Stack<Vertex> stack = new Stack<Vertex>();
         for (ArrayList<Tile> row : maze) {
             ArrayList<Vertex> mazeVRow = new ArrayList<Vertex>();
             mazeV.add(rowNumber, mazeVRow);
             rowNumber++;
             for (Tile t : row) {
                 Vertex v = new Vertex(t);
+
+                if (v.getTile().toString().equals("_")) {
+                    v.setDist(-1);// floor
+                } else if (v.getTile().toString().equals("*")) {
+                    v.setDist(0);// entrance
+                    canContinue = true;
+                } else if (v.getTile().toString().equals("#")){
+                    v.setDist(-2);
+                }
                 mazeVRow.add(v);
                 // set ici wall floor entrance?
             }
         }
 
-        Stack<Vertex> stack = new Stack<Vertex>();
+        //Stack<Vertex> stack = new Stack<Vertex>();
 
         for (int row = 0; row < mazeV.size(); row++) {
             for (int col = 0; col < mazeV.get(row).size(); col++) {
                 setNeighboor(col, row, mazeV);
                 Vertex v = mazeV.get(row).get(col);
 
-                if (v.getTile().toString().equals("_"))
-                    v.setDist(-1);// floor
-                else if (v.getTile().toString().equals("*")) {
+                if (v.getTile().toString().equals("*")) {
                     if (stack.empty()) {
                         v.setDist(0);// entrance
                         stack.push(v);
@@ -77,8 +86,6 @@ public class Maze {
                         canContinue = true;
                         v.setDist(-3);// exit
                     }
-                } else {
-                    v.setDist(-2);// wall
                 }
             }
         }
