@@ -45,6 +45,7 @@ public class KthSmallestElement {
                 return value.compareTo(o.value);
             }
         }
+
         Queue<MatrixElement> queue = new PriorityQueue<>();
         T returnValue;
         if (matrix != null) {
@@ -62,7 +63,7 @@ public class KthSmallestElement {
             } else {
                 count++;
                 if (mat.rIndex + 1 < matrix.length) {
-                    queue.add(new MatrixElement(matrix[mat.rIndex][mat.cIndex], mat.rIndex + 1, mat.cIndex));
+                    queue.add(new MatrixElement(matrix[mat.rIndex + 1][mat.cIndex], mat.rIndex + 1, mat.cIndex));
                 }
             }
         }
