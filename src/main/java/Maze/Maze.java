@@ -5,32 +5,32 @@ import java.util.stream.Collectors;
 
 public class Maze {
 
-    private static void setNeighboor(int x, int y, ArrayList<ArrayList<Vertex>> mazeV) {
+    private static void setNeighbors(int x, int y, ArrayList<ArrayList<Vertex>> mazeV) {
         Vertex left, right, up, down;
         Vertex v = mazeV.get(x).get(y);
 
         try {
             left = getValue(x, y - 1, mazeV);
             v.addList(left);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
         }
 
         try {
             right = getValue(x, y + 1, mazeV);
             v.addList(right);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
         }
 
         try {
             up = getValue(x - 1, y, mazeV);
             v.addList(up);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
         }
 
         try {
             down = getValue(x + 1, y, mazeV);
             v.addList(down);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
         }
     }
 
@@ -46,46 +46,39 @@ public class Maze {
      * @return Distance of the shortest path within the maze, null if not solvable
      */
     public static Integer findShortestPath(ArrayList<ArrayList<Tile>> maze) {
-        Boolean canContinue = false;
-        ArrayList<ArrayList<Vertex>> mazeV = new ArrayList<ArrayList<Vertex>>();
+        boolean canContinue = false;
+        ArrayList<ArrayList<Vertex>> mazeV = new ArrayList<>();
         int rowNumber = 0;
-
-        Stack<Vertex> stack = new Stack<Vertex>();
-        for (ArrayList<Tile> row : maze) {
-            ArrayList<Vertex> mazeVRow = new ArrayList<Vertex>();
+        for (ArrayList<Tile> row: maze) {
+            ArrayList<Vertex> mazeVRow = new ArrayList<>();
             mazeV.add(rowNumber, mazeVRow);
             rowNumber++;
-            for (Tile t : row) {
+            for (Tile t: row) {
                 Vertex v = new Vertex(t);
-
-                if (v.getTile().toString().equals("_")) {
-                    v.setDist(-1);// floor
-                } else if (v.getTile().toString().equals("*")) {
-                    v.setDist(0);// entrance
-                    canContinue = true;
-                } else if (v.getTile().toString().equals("#")){
-                    v.setDist(-2);
-                }
                 mazeVRow.add(v);
-                // set ici wall floor entrance?
             }
         }
 
-        //Stack<Vertex> stack = new Stack<Vertex>();
+        Stack<Vertex> stack = new Stack<>();
 
         for (int row = 0; row < mazeV.size(); row++) {
             for (int col = 0; col < mazeV.get(row).size(); col++) {
-                setNeighboor(col, row, mazeV);
+                setNeighbors(col, row, mazeV);
                 Vertex v = mazeV.get(row).get(col);
 
-                if (v.getTile().toString().equals("*")) {
+                if (v.getTile().toString().equals("_"))
+                    v.setDist(-1);// floor
+                else if (v.getTile().toString().equals("*")) {
                     if (stack.empty()) {
                         v.setDist(0);// entrance
                         stack.push(v);
                     } else {
                         canContinue = true;
                         v.setDist(-3);// exit
+                        System.out.println("*");
                     }
+                } else {
+                    v.setDist(-2);// wall
                 }
             }
         }
@@ -96,12 +89,12 @@ public class Maze {
 
         while (!stack.empty()) {
             Vertex vertex = stack.pop();
-            for (Vertex v : vertex.getList()) {
 
-                if (v.getDist() == -1 || v.getDist() == -3) {
+            for (Vertex v : vertex.getList()) {
+                if (v.getDist() == -1 || v.getDist() == -3 ){
                     v.setDist(vertex.getDist() + 1);
                     stack.push(v);
-                    if (v.getTile().toString().equals("*")) {
+                    if (v.getTile().toString().equals("*") ) {
                         return v.getDist();
                     }
                 }
