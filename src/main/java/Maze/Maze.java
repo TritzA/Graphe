@@ -75,7 +75,6 @@ public class Maze {
                     } else {
                         canContinue = true;
                         v.setDist(-3);// exit
-                        System.out.println("*");
                     }
                 } else {
                     v.setDist(-2);// wall
@@ -89,9 +88,9 @@ public class Maze {
 
         while (!stack.empty()) {
             Vertex vertex = stack.pop();
-
             for (Vertex v : vertex.getList()) {
-                if (v.getDist() == -1 || v.getDist() == -3 ){
+
+                if (v.getDist() == -1 || v.getDist() == -3 ){// floor or exit
                     v.setDist(vertex.getDist() + 1);
                     stack.push(v);
                     if (v.getTile().toString().equals("*") ) {

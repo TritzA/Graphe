@@ -13,7 +13,7 @@ public class KthSmallestElement {
      */
     /** TODO Worst case
      *      Time complexity : O ( k log max(m,n) )
-     *      Space complexity : O ( log max(m,n) )
+     *      Space complexity : O ( max(m,n) )
      *
      * Returns the `k`th smallest element in `matrix`
      * @param matrix 2D table of shape M x N respecting the following rules
