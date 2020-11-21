@@ -26,7 +26,11 @@ public class DetailMyWorld {
         for (int i = 0; i < world.size(); i++) {
             for (int j = 0; j < world.get(i).size(); j++) {
                 if (world.get(i).get(j) != 0) {
-                    listOfContinent.add(dfs(world, i, j));
+                    if (isBreadthFirstSearch) {
+                        listOfContinent.add(bfs(world, i, j));
+                    } else {
+                        listOfContinent.add(dfs(world, i, j));
+                    }
                 }
             }
         }
@@ -34,26 +38,58 @@ public class DetailMyWorld {
         return listOfContinent;
     }
 
-    public static Set<Integer> dfs1(ArrayList<ArrayList<Integer>> world, int i, int j) {
-        Set<Integer> continent = new HashSet<>();
-        continent.add(world.get(i).get(j));
-        world.get(i).set(j, 0);
-        if (i != 0) {
-            if (world.get(i - 1).get(j) != 0)
-                continent.addAll(Objects.requireNonNull(dfs(world, i - 1, j)));
-        }
+    public static Set<Integer> bfs(ArrayList<ArrayList<Integer>> world, int i, int j) {
 
-        if (i != world.size() - 1) {
-            if (world.get(i + 1).get(j) != 0)
-                continent.addAll(Objects.requireNonNull(dfs(world, i + 1, j)));
-        }
-        if (j != 0) {
-            if (world.get(i).get(j - 1) != 0)
-                continent.addAll(Objects.requireNonNull(dfs(world, i, j - 1)));
-        }
-        if (j != world.get(i).size() - 1) {
-            if (world.get(i).get(j + 1) != 0)
-                continent.addAll(Objects.requireNonNull(dfs(world, i, j + 1)));
+        Set<Integer> continent = new HashSet<>();
+        Queue<Integer> row = new ArrayDeque<>();
+        Queue<Integer> col = new ArrayDeque<>();
+        row.offer(i);
+        col.offer(j);
+        while (!row.isEmpty()) {
+
+            int x, y;
+            x = col.poll();
+            y = row.poll();
+            if (world.get(y).get(x) != 0) {
+                continent.add(world.get(y).get(x)); // optimisele code
+            }
+            world.get(y).set(x, 0);
+            if (x != 0) {
+                if (world.get(y).get(x - 1) != 0) {
+                    col.offer(x - 1);
+                    row.offer(y);
+                    continent.add(world.get(y).get(x - 1));
+                    world.get(y).set(x - 1, 0);
+                }
+            }
+
+            if (x != world.get(y).size() - 1) {
+                if (world.get(y).get(x + 1) != 0) {
+                    col.offer(x + 1);
+                    row.offer(y);
+                    continent.add(world.get(y).get(x + 1));
+                    world.get(y).set(x + 1, 0);
+                }
+            }
+
+            if (y != 0) {
+                if (world.get(y - 1).get(x) != 0) {
+                    col.offer(x);
+                    row.offer(y - 1);
+                    continent.add(world.get(y - 1).get(x));
+                    world.get(y - 1).set(x, 0);
+                }
+            }
+
+            if (y != world.size() - 1) {
+                if (world.get(y + 1).get(x) != 0) {
+                    col.offer(x);
+                    row.offer(y + 1);
+                    continent.add(world.get(y + 1).get(x));
+                    world.get(y + 1).set(x, 0);
+                }
+            }
+
         }
         return continent;
     }
@@ -69,40 +105,41 @@ public class DetailMyWorld {
             int x, y;
             x = col.pop();
             y = row.pop();
-            continent.add(world.get(y).get(x));
-            for (int k = 0; k < 4; k++) {
-                switch (k) {
-                    case 0:
-                        if (x != 0) {
-                            col.push(x - 1);
-                            row.push(y);
-                        }
-                        break;
-                    case 1:
-                        if (x != world.get(y).size() - 1) {
-                            col.push(x + 1);
-                            row.push(y);
-                        }
-                        break;
-                    case 2:
-                        if (y != 0) {
-                            col.push(x);
-                            row.push(y - 1);
-                        }
-                        break;
-                    case 3:
-                        if (y != world.size()-1) {
-                            col.push(x);
-                            row.push(y + 1);
-                        }
-                        break;
+            if (world.get(y).get(x) != 0) {
+                continent.add(world.get(y).get(x));
+            }
+            world.get(y).set(x, 0);
+
+            if (x != 0) {
+                if (world.get(y).get(x - 1) != 0) {
+                    col.push(x - 1);
+                    row.push(y);
                 }
             }
 
-        }
+            if (x != world.get(y).size() - 1) {
+                if (world.get(y).get(x + 1) != 0) {
+                    col.push(x + 1);
+                    row.push(y);
+                }
+            }
 
+            if (y != 0) {
+                if (world.get(y - 1).get(x) != 0) {
+                    col.push(x);
+                    row.push(y - 1);
+                }
+            }
+
+            if (y != world.size() - 1) {
+                if (world.get(y + 1).get(x) != 0) {
+                    col.push(x);
+                    row.push(y + 1);
+                }
+            }
+        }
         return continent;
-}
+    }
 
     public static void printWorld(ArrayList<ArrayList<Integer>> world) {
         for (ArrayList<Integer> row : world) {
