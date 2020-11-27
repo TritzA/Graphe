@@ -11,22 +11,23 @@ public class Vertex {
         this.tile = tile;
     }
 
-    public LinkedList<Vertex> getList(){
+    public LinkedList<Vertex> getList() {
         return list;
     }
-    public void addList(Vertex t){
+
+    public void addList(Vertex t) {
         list.add(t);
     }
 
-    public void setDist(int d){
+    public void setDist(int d) {
         this.dist = d;
     }
 
-    public int getDist(){
+    public int getDist() {
         return this.dist;
     }
 
-    public Tile getTile(){
+    public Tile getTile() {
         return this.tile;
     }
 }

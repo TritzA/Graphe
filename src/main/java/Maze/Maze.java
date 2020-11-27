@@ -5,37 +5,37 @@ import java.util.stream.Collectors;
 
 public class Maze {
 
-    private static void setNeighbors(int x, int y, ArrayList<ArrayList<Vertex>> mazeV) {
+    private static void setNeighbors(int row, int col, ArrayList<ArrayList<Vertex>> mazeV) {
         Vertex left, right, up, down;
-        Vertex v = mazeV.get(x).get(y);
+        Vertex v = mazeV.get(row).get(col);
 
         try {
-            left = getValue(x, y - 1, mazeV);
+            left = getValue(row, col - 1, mazeV);
             v.addList(left);
         } catch (IndexOutOfBoundsException ignored) {
         }
 
         try {
-            right = getValue(x, y + 1, mazeV);
+            right = getValue(row, col + 1, mazeV);
             v.addList(right);
         } catch (IndexOutOfBoundsException ignored) {
         }
 
         try {
-            up = getValue(x - 1, y, mazeV);
+            up = getValue(row - 1, col, mazeV);
             v.addList(up);
         } catch (IndexOutOfBoundsException ignored) {
         }
 
         try {
-            down = getValue(x + 1, y, mazeV);
+            down = getValue(row + 1, col, mazeV);
             v.addList(down);
         } catch (IndexOutOfBoundsException ignored) {
         }
     }
 
-    private static Vertex getValue(int x, int y, ArrayList<ArrayList<Vertex>> mazeV) {
-        return mazeV.get(x).get(y);
+    private static Vertex getValue(int row, int col, ArrayList<ArrayList<Vertex>> mazeV) {
+        return mazeV.get(row).get(col);
     }
 
     /**
@@ -49,35 +49,40 @@ public class Maze {
         boolean canContinue = false;
         ArrayList<ArrayList<Vertex>> mazeV = new ArrayList<>();
         int rowNumber = 0;
-        for (ArrayList<Tile> row: maze) {
+
+        for (ArrayList<Tile> row : maze) {
             ArrayList<Vertex> mazeVRow = new ArrayList<>();
             mazeV.add(rowNumber, mazeVRow);
             rowNumber++;
-            for (Tile t: row) {
-                Vertex v = new Vertex(t);
-                mazeVRow.add(v);
+            for (Tile tile : row) {
+                Vertex vertex = new Vertex(tile);
+                mazeVRow.add(vertex);
             }
         }
 
         Stack<Vertex> stack = new Stack<>();
 
         for (int row = 0; row < mazeV.size(); row++) {
+
             for (int col = 0; col < mazeV.get(row).size(); col++) {
                 setNeighbors(col, row, mazeV);
-                Vertex v = mazeV.get(row).get(col);
+                Vertex vertex = mazeV.get(row).get(col);
 
-                if (v.getTile().toString().equals("_"))
-                    v.setDist(-1);// floor
-                else if (v.getTile().toString().equals("*")) {
+                if (vertex.getTile().toString().equals("_")) {
+                    vertex.setDist(-1);// floor
+
+                } else if (vertex.getTile().toString().equals("*")) {
+
                     if (stack.empty()) {
-                        v.setDist(0);// entrance
-                        stack.push(v);
+                        vertex.setDist(0);// entrance
+                        stack.push(vertex);
                     } else {
                         canContinue = true;
-                        v.setDist(-3);// exit
+                        vertex.setDist(-3);// exit
                     }
+
                 } else {
-                    v.setDist(-2);// wall
+                    vertex.setDist(-2);// wall
                 }
             }
         }
@@ -87,14 +92,14 @@ public class Maze {
         }
 
         while (!stack.empty()) {
-            Vertex vertex = stack.pop();
-            for (Vertex v : vertex.getList()) {
+            Vertex vertexPop = stack.pop();
+            for (Vertex vertexAdj : vertexPop.getList()) {
 
-                if (v.getDist() == -1 || v.getDist() == -3 ){// floor or exit
-                    v.setDist(vertex.getDist() + 1);
-                    stack.push(v);
-                    if (v.getTile().toString().equals("*") ) {
-                        return v.getDist();
+                if (vertexAdj.getDist() == -1 || vertexAdj.getDist() == -3) {// floor or exit
+                    vertexAdj.setDist(vertexPop.getDist() + 1);
+                    stack.push(vertexAdj);
+                    if (vertexAdj.getTile().toString().equals("*")) {
+                        return vertexAdj.getDist();
                     }
                 }
             }
@@ -102,6 +107,7 @@ public class Maze {
         return null;
     }
 
+    //Not use, default method
     public static void printMaze(ArrayList<ArrayList<Tile>> maze) {
         for (ArrayList<Tile> row : maze) {
             System.out.println(row.stream().map(String::valueOf).collect(Collectors.joining("")));
