@@ -4,6 +4,8 @@ Résoudre trois problèmes grâce à la théorie des graphes.
 
 Laboratoire : 5/5
 
+École : [Polytechnique Montréal](https://www.polymtl.ca)
+
 Cours : INF2010 Structures de données et algorithmes
 
 Partenaire : [Maxence Lefevre](https://github.com/Solonioka)
